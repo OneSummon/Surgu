@@ -29,10 +29,36 @@ shops = {
 
 # Создайте словарь цен на продкты следующего вида (писать прямо в коде)
 sweets = {
-    'название сладости': [
-        {'shop': 'название магазина', 'price': 99.99},
+    'карамель': [
         # TODO тут с клавиатуры введите магазины и цены (можно копипастить ;)
+        {'shop': 'ашан', 'price': 45.99},
+        {'shop': 'пятерочка', 'price': 46.99},
+        {'shop': 'магнит', 'price': 41.99},
     ],
     # TODO тут с клавиатуры введите другую сладость и далее словарь магазинов
+    'пирожное': [
+        {'shop': 'ашан', 'price': 67.99},
+        {'shop': 'пятерочка', 'price': 59.99},
+        {'shop': 'магнит', 'price': 62.99},
+    ],
 }
 # Указать надо только по 2 магазина с минимальными ценами
+print("Карамель")
+caramel_price = []
+for i in range(len(sweets['карамель'])):
+    caramel_price.append(sweets['карамель'][i]["price"])
+min_sum_caramel = min(caramel_price)
+
+for i in range(len(sweets['карамель'])):
+    if sweets['карамель'][i]["price"] == min_sum_caramel:
+        print(sweets['карамель'][i])
+        caramel_price.remove(sweets['карамель'][i]["price"])
+
+min_sum_caramel = min(caramel_price)
+
+for i in range(len(sweets['карамель'])):
+    if sweets['карамель'][i]["price"] == min_sum_caramel:
+        print(sweets['карамель'][i])
+
+print("Пирожное")
+

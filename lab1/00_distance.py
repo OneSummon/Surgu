@@ -13,9 +13,9 @@ sites = {
 # расстояние на координатной сетке - ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
 
 distances = {}
+sities_keys = list(sites.keys())
 
 for i in range(len(sites)):
-    sities_keys = list(sites.keys())
     next_i = (i + 1) % len(sites)
     
     distance = {"distance" : ((sites[sities_keys[i]][0] - sites[sities_keys[next_i]][0]) ** 2 + (sites[sities_keys[i]][1] - sites[sities_keys[next_i]][1]) ** 2) ** 0.5}
