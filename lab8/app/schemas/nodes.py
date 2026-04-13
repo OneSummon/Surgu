@@ -6,6 +6,7 @@ class CreateSchema(BaseModel):
     description: str
 
 class NodeResponseSchema(BaseModel):
+    id: int
     name: str
     description: str
     status: str

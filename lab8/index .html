@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo List</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+
+  header { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 20px; font-weight: 600; }
+
+  .container { max-width: 760px; margin: 32px auto; padding: 0 16px; }
+
+  .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
+
+  .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 160px; }
+  label { font-size: 13px; color: #555; font-weight: 500; }
+  input[type=text], textarea {
+    border: 1px solid #d5d5d5; border-radius: 8px; padding: 9px 12px;
+    font-size: 14px; font-family: inherit; outline: none; background: #fff; color: #1a1a1a;
+    transition: border-color 0.15s;
+  }
+  input[type=text]:focus, textarea:focus { border-color: #7c6ff7; box-shadow: 0 0 0 3px #eeecff; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  button {
+    border: none; border-radius: 8px; padding: 9px 18px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: opacity 0.15s, transform 0.1s;
+  }
+  button:active { transform: scale(0.97); }
+  .btn-primary { background: #7c6ff7; color: #fff; }
+  .btn-primary:hover { background: #6a5ce6; }
+  .btn-danger { background: #fee2e2; color: #991b1b; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-success { background: #d1fae5; color: #065f46; }
+  .btn-success:hover { background: #a7f3d0; }
+  .btn-secondary { background: #f3f3f3; color: #333; }
+  .btn-secondary:hover { background: #e8e8e8; }
+  .btn-sm { padding: 5px 10px; font-size: 13px; }
+
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #1a1a1a; }
+
+  .node-list { display: flex; flex-direction: column; gap: 10px; }
+  .node-item {
+    background: #fafafa; border: 1px solid #e5e5e5; border-radius: 10px;
+    padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px;
+    transition: border-color 0.15s;
+  }
+  .node-item:hover { border-color: #c4bffa; }
+  .node-item.completed { opacity: 0.6; }
+
+  .node-body { flex: 1; }
+  .node-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .node-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+  .node-meta { font-size: 12px; color: #999; }
+
+  .status-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    margin-right: 8px;
+  }
+  .status-not-completed { background: #fef3c7; color: #92400e; }
+  .status-completed { background: #d1fae5; color: #065f46; }
+  .status-in-progress { background: #dbeafe; color: #1e40af; }
+
+  .node-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 100; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 14px; padding: 24px; width: 100%; max-width: 420px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12); margin: 16px;
+  }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+  .pagination { display: flex; align-items: center; gap: 10px; margin-top: 16px; justify-content: center; }
+  .pagination button { padding: 6px 14px; font-size: 13px; background: #f3f3f3; color: #333; border: 1px solid #e5e5e5; }
+  .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+  #pageInfo { font-size: 13px; color: #555; }
+
+  .empty { text-align: center; color: #999; font-size: 14px; padding: 32px 0; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1a1a1a; color: #fff; padding: 10px 22px; border-radius: 8px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    z-index: 200; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: #991b1b; }
+
+  select {
+    border: 1px solid #d5d5d5; border-radius: 8px; padding: 9px 12px;
+    font-size: 14px; font-family: inherit; background: #fff; color: #1a1a1a; outline: none; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Todo List</h1>
+  <span id="nodeCount" style="font-size:13px;color:#888;"></span>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="section-title">Новая задача</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="newName">Название</label>
+        <input type="text" id="newName" placeholder="Название задачи" maxlength="20">
+      </div>
+      <div class="form-group" style="flex:2">
+        <label for="newDesc">Описание</label>
+        <input type="text" id="newDesc" placeholder="Описание">
+      </div>
+      <div class="form-group" style="flex:0;justify-content:flex-end">
+        <label style="opacity:0">.</label>
+        <button class="btn-primary" onclick="createNode()">Добавить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Задачи</div>
+    <div id="nodeList" class="node-list">
+      <div class="empty">Загрузка...</div>
+    </div>
+    <div class="pagination">
+      <button id="btnPrev" onclick="prevPage()" disabled>← Назад</button>
+      <span id="pageInfo">стр. 1</span>
+      <button id="btnNext" onclick="nextPage()">Вперёд →</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Редактировать задачу</div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Название</label>
+      <input type="text" id="editName" maxlength="20">
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Описание</label>
+      <textarea id="editDesc"></textarea>
+    </div>
+    <div class="form-group" style="margin-bottom:4px">
+      <label>Статус</label>
+      <select id="editStatus">
+        <option value="not-completed">not-completed</option>
+        <option value="in-progress">in-progress</option>
+        <option value="completed">completed</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Отмена</button>
+      <button class="btn-primary" onclick="saveEdit()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:8000';
+let currentPage = 0;
+const limit = 10;
+let editingId = null;
+
+async function apiFetch(path, options = {}) {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `HTTP ${res.status}`);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function statusClass(s) {
+  if (s === 'completed') return 'status-completed';
+  if (s === 'in-progress') return 'status-in-progress';
+  return 'status-not-completed';
+}
+
+function nextStatus(s) {
+  if (s === 'not-completed') return 'in-progress';
+  if (s === 'in-progress') return 'completed';
+  return 'not-completed';
+}
+
+function nextStatusLabel(s) {
+  if (s === 'not-completed') return '▶ В работу';
+  if (s === 'in-progress') return '✓ Готово';
+  return '↩ Сбросить';
+}
+
+function nextStatusBtnClass(s) {
+  if (s === 'not-completed') return 'btn-primary';
+  if (s === 'in-progress') return 'btn-success';
+  return 'btn-secondary';
+}
+
+function fmt(dt) {
+  return new Date(dt).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+async function loadNodes() {
+  const list = document.getElementById('nodeList');
+  list.innerHTML = '<div class="empty">Загрузка...</div>';
+  try {
+    const nodes = await apiFetch(`/nodes?limit=${limit}&offset=${currentPage * limit}`);
+    document.getElementById('nodeCount').textContent = `Страница ${currentPage + 1}`;
+    if (!nodes || nodes.length === 0) {
+      list.innerHTML = '<div class="empty">Задач нет. Добавьте первую!</div>';
+      document.getElementById('btnNext').disabled = true;
+      return;
+    }
+    document.getElementById('btnNext').disabled = nodes.length < limit;
+    list.innerHTML = '';
+    nodes.forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'node-item' + (n.status === 'completed' ? ' completed' : '');
+
+      const btnClass = nextStatusBtnClass(n.status);
+
+      div.innerHTML = `
+        <div class="node-body">
+          <div class="node-name">${esc(n.name)}</div>
+          <div class="node-desc">${esc(n.description)}</div>
+          <div class="node-meta">
+            <span class="status-badge ${statusClass(n.status)}">${n.status}</span>
+            обновлено: ${fmt(n.updated_at)}
+          </div>
+        </div>
+        <div class="node-actions">
+          <button class="btn-sm ${btnClass} btn-status-toggle">${nextStatusLabel(n.status)}</button>
+          <button class="btn-sm btn-secondary btn-edit">✏️</button>
+          <button class="btn-sm btn-danger btn-delete">🗑</button>
+        </div>
+      `;
+
+      div.querySelector('.btn-status-toggle').addEventListener('click', () => cycleStatus(n.id, n.status));
+      div.querySelector('.btn-edit').addEventListener('click', () => openEdit(n.id, n.name, n.description, n.status));
+      div.querySelector('.btn-delete').addEventListener('click', () => removeNode(n.id));
+
+      list.appendChild(div);
+    });
+  } catch(e) {
+    list.innerHTML = `<div class="empty">Ошибка загрузки: ${e.message}</div>`;
+  }
+}
+
+async function cycleStatus(id, currentStatus) {
+  const next = nextStatus(currentStatus);
+  try {
+    await apiFetch(`/nodes/${id}`, { method: 'PUT', body: JSON.stringify({ status: next }) });
+    toast(`Статус → ${next}`);
+    loadNodes();
+  } catch(e) {
+    toast(e.message, true);
+  }
+}
+
+async function createNode() {
+  const name = document.getElementById('newName').value.trim();
+  const description = document.getElementById('newDesc').value.trim();
+  if (!name || !description) { toast('Заполните название и описание', true); return; }
+  try {
+    await apiFetch('/nodes', { method: 'POST', body: JSON.stringify({ name, description }) });
+    document.getElementById('newName').value = '';
+    document.getElementById('newDesc').value = '';
+    toast('Задача добавлена');
+    loadNodes();
+  } catch(e) {
+    toast(e.message, true);
+  }
+}
+
+async function removeNode(id) {
+  if (!confirm('Удалить задачу?')) return;
+  try {
+    await apiFetch(`/nodes/${id}`, { method: 'DELETE' });
+    toast('Задача удалена');
+    loadNodes();
+  } catch(e) {
+    toast(e.message, true);
+  }
+}
+
+function openEdit(id, name, description, status) {
+  editingId = id;
+  document.getElementById('editName').value = name;
+  document.getElementById('editDesc').value = description;
+  document.getElementById('editStatus').value = status;
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('editModal').classList.remove('open');
+  editingId = null;
+}
+
+async function saveEdit() {
+  const name = document.getElementById('editName').value.trim();
+  const description = document.getElementById('editDesc').value.trim();
+  const status = document.getElementById('editStatus').value;
+  const body = { status };
+  if (name) body.name = name;
+  if (description) body.description = description;
+  try {
+    await apiFetch(`/nodes/${editingId}`, { method: 'PUT', body: JSON.stringify(body) });
+    toast('Задача обновлена');
+    closeModal();
+    loadNodes();
+  } catch(e) {
+    toast(e.message, true);
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) { currentPage--; updatePagination(); loadNodes(); }
+}
+function nextPage() { currentPage++; updatePagination(); loadNodes(); }
+
+function updatePagination() {
+  document.getElementById('pageInfo').textContent = `стр. ${currentPage + 1}`;
+  document.getElementById('btnPrev').disabled = currentPage === 0;
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+let toastTimer;
+function toast(msg, error = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (error ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+document.getElementById('editModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('editModal')) closeModal();
+});
+
+document.getElementById('newDesc').addEventListener('keydown', e => {
+  if (e.key === 'Enter') createNode();
+});
+
+loadNodes();
+</script>
+</body>
+</html>
