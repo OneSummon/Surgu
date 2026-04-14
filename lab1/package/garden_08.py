@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-# в саду сорвали цветы
 garden = ('ромашка', 'роза', 'одуванчик', 'ромашка', 'гладиолус', 'подсолнух', 'роза', )
 
 # на лугу сорвали цветы
@@ -15,17 +11,31 @@ garden_set = set(garden)
 meadow_set = set(meadow)
 
 # выведите на консоль все виды цветов
-# TODO здесь ваш код
-print(set(garden + meadow))
+def all_types(garden: tuple[str], meadow: tuple[str]):
+    return set(garden + meadow)
+
+# print(all_types(garden, meadow))
 
 # выведите на консоль те, которые растут и там и там
-# TODO здесь ваш код
-print(garden_set & meadow_set)
+def grow_everywhere(garden: tuple[str], meadow: tuple[str]):
+    garden_set = set(garden)
+    meadow_set = set(meadow)
+    return garden_set & meadow_set
+
+# print(grow_everywhere(garden, meadow))
 
 # выведите на консоль те, которые растут в саду, но не растут на лугу
-# TODO здесь ваш код
-print(garden_set - meadow_set)
+def only_garden(garden: tuple[str], meadow: tuple[str]):
+    garden_set = set(garden)
+    meadow_set = set(meadow)
+    return garden_set - meadow_set
+
+# print(only_garden(garden, meadow))
 
 # выведите на консоль те, которые растут на лугу, но не растут в саду
-# TODO здесь ваш код
-print(meadow_set - garden_set)
+def only_meadow(garden: tuple[str], meadow: tuple[str]):
+    garden_set = set(garden)
+    meadow_set = set(meadow)
+    return meadow_set - garden_set
+
+# print(only_meadow(garden, meadow))

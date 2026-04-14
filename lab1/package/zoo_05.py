@@ -1,34 +1,35 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-# есть список животных в зоопарке
-
+from typing import List
 zoo = ['lion', 'kangaroo', 'elephant', 'monkey', ]
 
 # посадите медведя (bear) между львом и кенгуру
 #  и выведите список на консоль
-# TODO здесь ваш код
+
 zoo.insert(1, "bear")
-print(zoo)
+# print(zoo)
 
 # добавьте птиц из списка birds в последние клетки зоопарка
 birds = ['rooster', 'ostrich', 'lark', ]
 #  и выведите список на консоль
-# TODO здесь ваш код
-for bird in birds:
-    zoo.append(bird)
-print(zoo)
+
+def add_birds(birds: List[str]):
+    for bird in birds:
+        zoo.append(bird)
+
+# add_birds(birds)
+# print(birds)
 
 # уберите слона
 #  и выведите список на консоль
-# TODO здесь ваш код
+
 zoo.remove("elephant")
-print(zoo)
+# print(zoo)
 
 # выведите на консоль в какой клетке сидит лев (lion) и жаворонок (lark).
 # Номера при выводе должны быть понятны простому человеку, не программисту.
-# TODO здесь ваш код
-idx_lion = zoo.index("lion")
-idx_lark = zoo.index('lark')
-print(idx_lion + 1)
-print(idx_lark + 1)
+
+def find_animal(zoo: List[str], animal: str):
+    idx_animal = zoo.index(animal)
+    return idx_animal + 1
+
+# print(find_animal(zoo, "lion"))
+# print(find_animal(zoo, "lark"))

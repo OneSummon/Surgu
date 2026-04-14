@@ -43,20 +43,23 @@ sweets = {
     ],
 }
 # Указать надо только по 2 магазина с минимальными ценами
-for sweet in sweets:
-    print(f"{sweet}")
-    caramel_price = []
-    for i in range(len(sweets[f"{sweet}"])):
-        caramel_price.append(sweets[f"{sweet}"][i]["price"])
-    min_sum_caramel = min(caramel_price)
+def store_2_with_min_prices(sweets: dict):
+    for sweet in sweets:
+        print(f"{sweet}")
+        caramel_price = []
+        for i in range(len(sweets[f"{sweet}"])):
+            caramel_price.append(sweets[f"{sweet}"][i]["price"])
+        min_sum_caramel = min(caramel_price)
 
-    for i in range(len(sweets[f"{sweet}"])):
-        if sweets[f"{sweet}"][i]["price"] == min_sum_caramel:
-            print(sweets[f"{sweet}"][i])
-            caramel_price.remove(sweets[f"{sweet}"][i]["price"])
+        for i in range(len(sweets[f"{sweet}"])):
+            if sweets[f"{sweet}"][i]["price"] == min_sum_caramel:
+                print(sweets[f"{sweet}"][i])
+                caramel_price.remove(sweets[f"{sweet}"][i]["price"])
 
-    min_sum_caramel = min(caramel_price)
+        min_sum_caramel = min(caramel_price)
 
-    for i in range(len(sweets[f"{sweet}"])):
-        if sweets[f"{sweet}"][i]["price"] == min_sum_caramel:
-            print(sweets[f"{sweet}"][i])
+        for i in range(len(sweets[f"{sweet}"])):
+            if sweets[f"{sweet}"][i]["price"] == min_sum_caramel:
+                print(sweets[f"{sweet}"][i])
+
+# store_2_with_min_prices(sweets)
