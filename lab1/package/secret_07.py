@@ -9,6 +9,9 @@ secret_message = [
 ]
 
 def decode(secret_message: List[str]):
+    if not secret_message:
+        return None
+    
     first_word = secret_message[0][3]
     second_word = secret_message[1][9:13]
     therd_word = secret_message[2][5:15:2]

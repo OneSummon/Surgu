@@ -6,6 +6,9 @@ sites = {
 
 
 def distance(sites: dict):
+    if not sites:
+        return None
+
     distances = {}
     sities_keys = list(sites.keys())
 

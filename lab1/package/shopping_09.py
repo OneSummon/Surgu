@@ -44,6 +44,9 @@ sweets = {
 }
 # Указать надо только по 2 магазина с минимальными ценами
 def store_2_with_min_prices(sweets: dict):
+    if not sweets:
+        return None
+    
     for sweet in sweets:
         print(f"{sweet}")
         caramel_price = []

@@ -15,6 +15,9 @@ violator_songs_list = [
 
 
 def sum_3_songs_list(violator_songs_list: List[List], song_1: str, song_2: str, song_3: str):
+    if not violator_songs_list or song_1 not in violator_songs_list or song_2 not in violator_songs_list or song_3 not in violator_songs_list:
+        return None
+    
     all_time_songs = 0
     for i in range(len(violator_songs_list)):
         if violator_songs_list[i][0] in [song_1, song_2, song_3]:
@@ -39,6 +42,9 @@ violator_songs_dict = {
 
 
 def sum_3_songs_dict(violator_songs_dict: dict, song_1: str, song_2: str, song_3: str):
+    if not violator_songs_dict or song_1 not in violator_songs_dict or song_2 not in violator_songs_dict or song_3 not in violator_songs_dict:
+        return None
+    
     vsd_name = list(violator_songs_dict.keys())
     vsd_values = list(violator_songs_dict.values())
     time_3_songs = 0

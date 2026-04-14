@@ -17,6 +17,9 @@ my_family_height = [
 
 
 def height_father(family_list: List[str], list_height: List[List]):
+    if family_list is None or list_height is None:
+        return None
+    
     for i in range(len(family_list)):
         if family_list[i] == "Папа":
             return f"Рост отца - {list_height[i][1]} см"
@@ -25,6 +28,9 @@ def height_father(family_list: List[str], list_height: List[List]):
 
 
 def sum_height(family_list: List[str], list_height: List[List]):
+    if family_list is None or list_height is None:
+        return None
+    
     result = 0
     for i in range(len(family_list)):
         result += list_height[i][1]

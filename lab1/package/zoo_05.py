@@ -12,6 +12,9 @@ birds = ['rooster', 'ostrich', 'lark', ]
 #  и выведите список на консоль
 
 def add_birds(birds: List[str]):
+    if not birds:
+        return None
+    
     for bird in birds:
         zoo.append(bird)
 
@@ -28,6 +31,9 @@ zoo.remove("elephant")
 # Номера при выводе должны быть понятны простому человеку, не программисту.
 
 def find_animal(zoo: List[str], animal: str):
+    if not zoo or not animal in zoo:
+        return None
+    
     idx_animal = zoo.index(animal)
     return idx_animal + 1
 
