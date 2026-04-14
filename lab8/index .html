@@ -12,18 +12,18 @@
   header h1 { font-size: 20px; font-weight: 600; }
 
   .container { max-width: 760px; margin: 32px auto; padding: 0 16px; }
-
   .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
 
-  .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 160px; }
+  .form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 120px; }
   label { font-size: 13px; color: #555; font-weight: 500; }
-  input[type=text], textarea {
+
+  input[type=text], input[type=number], textarea, select {
     border: 1px solid #d5d5d5; border-radius: 8px; padding: 9px 12px;
     font-size: 14px; font-family: inherit; outline: none; background: #fff; color: #1a1a1a;
     transition: border-color 0.15s;
   }
-  input[type=text]:focus, textarea:focus { border-color: #7c6ff7; box-shadow: 0 0 0 3px #eeecff; }
+  input:focus, textarea:focus, select:focus { border-color: #7c6ff7; box-shadow: 0 0 0 3px #eeecff; }
   textarea { resize: vertical; min-height: 70px; }
 
   button {
@@ -51,6 +51,7 @@
   }
   .node-item:hover { border-color: #c4bffa; }
   .node-item.completed { opacity: 0.6; }
+  .node-item.highlight { border-color: #7c6ff7; background: #f5f3ff; }
 
   .node-body { flex: 1; }
   .node-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
@@ -58,14 +59,44 @@
   .node-meta { font-size: 12px; color: #999; }
 
   .status-badge {
-    display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
-    margin-right: 8px;
+    display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-right: 8px;
   }
   .status-not-completed { background: #fef3c7; color: #92400e; }
   .status-completed { background: #d1fae5; color: #065f46; }
   .status-in-progress { background: #dbeafe; color: #1e40af; }
 
   .node-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+
+  .search-result { background: #f5f3ff; border: 1.5px solid #7c6ff7; border-radius: 10px; padding: 14px 16px; display: none; margin-top: 14px; }
+  .search-result.visible { display: block; }
+  .search-label { font-size: 12px; color: #7c6ff7; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
+
+  .pagination-bar {
+    display: flex; align-items: center; gap: 8px; margin-top: 16px;
+    padding-top: 14px; border-top: 1px solid #f0f0f0; flex-wrap: wrap;
+  }
+  .pagination-bar button { padding: 6px 14px; font-size: 13px; background: #f3f3f3; color: #333; border: 1px solid #e5e5e5; }
+  .pagination-bar button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pagination-info { font-size: 13px; color: #555; flex: 1; text-align: center; }
+
+  .pagination-settings {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 14px; background: #fafafa; border: 1px solid #ebebeb;
+    border-radius: 8px; margin-bottom: 14px;
+  }
+  .pagination-settings label { font-size: 13px; color: #555; font-weight: 500; white-space: nowrap; }
+  .pagination-settings input { width: 72px; padding: 6px 10px; font-size: 13px; }
+  .pagination-settings .divider { width: 1px; height: 20px; background: #e5e5e5; }
+
+  .empty { text-align: center; color: #999; font-size: 14px; padding: 32px 0; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1a1a1a; color: #fff; padding: 10px 22px; border-radius: 8px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 200; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: #991b1b; }
 
   .modal-overlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
@@ -79,37 +110,18 @@
   .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
   .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
-  .pagination { display: flex; align-items: center; gap: 10px; margin-top: 16px; justify-content: center; }
-  .pagination button { padding: 6px 14px; font-size: 13px; background: #f3f3f3; color: #333; border: 1px solid #e5e5e5; }
-  .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
-  #pageInfo { font-size: 13px; color: #555; }
-
-  .empty { text-align: center; color: #999; font-size: 14px; padding: 32px 0; }
-
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: #1a1a1a; color: #fff; padding: 10px 22px; border-radius: 8px;
-    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-    z-index: 200; white-space: nowrap;
-  }
-  .toast.show { opacity: 1; }
-  .toast.error { background: #991b1b; }
-
-  select {
-    border: 1px solid #d5d5d5; border-radius: 8px; padding: 9px 12px;
-    font-size: 14px; font-family: inherit; background: #fff; color: #1a1a1a; outline: none; cursor: pointer;
-  }
+  .id-badge { font-size: 11px; color: #999; background: #f0f0f0; border-radius: 4px; padding: 2px 6px; margin-left: 6px; font-weight: 400; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>📋 Todo List</h1>
-  <span id="nodeCount" style="font-size:13px;color:#888;"></span>
 </header>
 
 <div class="container">
 
+  <!-- Create -->
   <div class="card">
     <div class="section-title">Новая задача</div>
     <div class="form-row">
@@ -121,27 +133,57 @@
         <label for="newDesc">Описание</label>
         <input type="text" id="newDesc" placeholder="Описание">
       </div>
-      <div class="form-group" style="flex:0;justify-content:flex-end">
-        <label style="opacity:0">.</label>
+      <div style="flex:0">
         <button class="btn-primary" onclick="createNode()">Добавить</button>
       </div>
     </div>
   </div>
 
+  <!-- Search by ID -->
   <div class="card">
-    <div class="section-title">Задачи</div>
+    <div class="section-title">Поиск по ID</div>
+    <div class="form-row">
+      <div class="form-group" style="max-width:180px">
+        <label for="searchId">ID задачи</label>
+        <input type="number" id="searchId" placeholder="например, 3" min="1">
+      </div>
+      <div style="flex:0"><button class="btn-secondary" onclick="searchById()">Найти</button></div>
+      <div style="flex:0"><button class="btn-secondary" onclick="clearSearch()" id="btnClearSearch" style="display:none">✕ Сбросить</button></div>
+    </div>
+    <div class="search-result" id="searchResult">
+      <div class="search-label">Результат поиска</div>
+      <div id="searchResultContent"></div>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="card">
+    <div class="section-title">Все задачи</div>
+
+    <div class="pagination-settings">
+      <label for="inputLimit">Показывать по</label>
+      <input type="number" id="inputLimit" value="10" min="1" max="100">
+      <div class="divider"></div>
+      <label for="inputOffset">Начиная с записи</label>
+      <input type="number" id="inputOffset" value="0" min="0">
+      <button class="btn-secondary btn-sm" onclick="applyPaginationSettings()">Применить</button>
+      <button class="btn-secondary btn-sm" onclick="resetPaginationSettings()">Сбросить</button>
+    </div>
+
     <div id="nodeList" class="node-list">
       <div class="empty">Загрузка...</div>
     </div>
-    <div class="pagination">
+
+    <div class="pagination-bar">
       <button id="btnPrev" onclick="prevPage()" disabled>← Назад</button>
-      <span id="pageInfo">стр. 1</span>
+      <span class="pagination-info" id="pageInfo">стр. 1 · показано 0–0</span>
       <button id="btnNext" onclick="nextPage()">Вперёд →</button>
     </div>
   </div>
 
 </div>
 
+<!-- Edit Modal -->
 <div class="modal-overlay" id="editModal">
   <div class="modal">
     <div class="modal-title">Редактировать задачу</div>
@@ -173,7 +215,8 @@
 <script>
 const API = 'http://localhost:8000';
 let currentPage = 0;
-const limit = 10;
+let limit = 10;
+let offset = 0;
 let editingId = null;
 
 async function apiFetch(path, options = {}) {
@@ -194,73 +237,129 @@ function statusClass(s) {
   if (s === 'in-progress') return 'status-in-progress';
   return 'status-not-completed';
 }
-
 function nextStatus(s) {
   if (s === 'not-completed') return 'in-progress';
   if (s === 'in-progress') return 'completed';
   return 'not-completed';
 }
-
 function nextStatusLabel(s) {
   if (s === 'not-completed') return '▶ В работу';
   if (s === 'in-progress') return '✓ Готово';
   return '↩ Сбросить';
 }
-
 function nextStatusBtnClass(s) {
   if (s === 'not-completed') return 'btn-primary';
   if (s === 'in-progress') return 'btn-success';
   return 'btn-secondary';
 }
-
 function fmt(dt) {
   return new Date(dt).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function buildNodeEl(n, highlight = false) {
+  const div = document.createElement('div');
+  div.className = 'node-item' + (n.status === 'completed' ? ' completed' : '') + (highlight ? ' highlight' : '');
+  const btnClass = nextStatusBtnClass(n.status);
+  div.innerHTML = `
+    <div class="node-body">
+      <div class="node-name">${esc(n.name)}<span class="id-badge">#${n.id}</span></div>
+      <div class="node-desc">${esc(n.description)}</div>
+      <div class="node-meta">
+        <span class="status-badge ${statusClass(n.status)}">${n.status}</span>
+        обновлено: ${fmt(n.updated_at)}
+      </div>
+    </div>
+    <div class="node-actions">
+      <button class="btn-sm ${btnClass}">${nextStatusLabel(n.status)}</button>
+      <button class="btn-sm btn-secondary btn-edit">✏️</button>
+      <button class="btn-sm btn-danger btn-delete">🗑</button>
+    </div>
+  `;
+  div.querySelectorAll('.node-actions button')[0].addEventListener('click', () => cycleStatus(n.id, n.status));
+  div.querySelector('.btn-edit').addEventListener('click', () => openEdit(n.id, n.name, n.description, n.status));
+  div.querySelector('.btn-delete').addEventListener('click', () => removeNode(n.id));
+  return div;
+}
+
+function computedOffset() {
+  return offset + currentPage * limit;
 }
 
 async function loadNodes() {
   const list = document.getElementById('nodeList');
   list.innerHTML = '<div class="empty">Загрузка...</div>';
+  const off = computedOffset();
   try {
-    const nodes = await apiFetch(`/nodes?limit=${limit}&offset=${currentPage * limit}`);
-    document.getElementById('nodeCount').textContent = `Страница ${currentPage + 1}`;
+    const nodes = await apiFetch(`/nodes?limit=${limit}&offset=${off}`);
     if (!nodes || nodes.length === 0) {
-      list.innerHTML = '<div class="empty">Задач нет. Добавьте первую!</div>';
+      list.innerHTML = '<div class="empty">Задач нет на этой странице.</div>';
       document.getElementById('btnNext').disabled = true;
+      updatePageInfo(off, 0);
       return;
     }
     document.getElementById('btnNext').disabled = nodes.length < limit;
     list.innerHTML = '';
-    nodes.forEach(n => {
-      const div = document.createElement('div');
-      div.className = 'node-item' + (n.status === 'completed' ? ' completed' : '');
-
-      const btnClass = nextStatusBtnClass(n.status);
-
-      div.innerHTML = `
-        <div class="node-body">
-          <div class="node-name">${esc(n.name)}</div>
-          <div class="node-desc">${esc(n.description)}</div>
-          <div class="node-meta">
-            <span class="status-badge ${statusClass(n.status)}">${n.status}</span>
-            обновлено: ${fmt(n.updated_at)}
-          </div>
-        </div>
-        <div class="node-actions">
-          <button class="btn-sm ${btnClass} btn-status-toggle">${nextStatusLabel(n.status)}</button>
-          <button class="btn-sm btn-secondary btn-edit">✏️</button>
-          <button class="btn-sm btn-danger btn-delete">🗑</button>
-        </div>
-      `;
-
-      div.querySelector('.btn-status-toggle').addEventListener('click', () => cycleStatus(n.id, n.status));
-      div.querySelector('.btn-edit').addEventListener('click', () => openEdit(n.id, n.name, n.description, n.status));
-      div.querySelector('.btn-delete').addEventListener('click', () => removeNode(n.id));
-
-      list.appendChild(div);
-    });
+    nodes.forEach(n => list.appendChild(buildNodeEl(n)));
+    updatePageInfo(off, nodes.length);
   } catch(e) {
     list.innerHTML = `<div class="empty">Ошибка загрузки: ${e.message}</div>`;
   }
+}
+
+function updatePageInfo(off, count) {
+  const from = count === 0 ? 0 : off + 1;
+  const to = off + count;
+  document.getElementById('pageInfo').textContent =
+    `стр. ${currentPage + 1}`;
+  document.getElementById('btnPrev').disabled = currentPage === 0 && off === 0;
+}
+
+function applyPaginationSettings() {
+  const newLimit = parseInt(document.getElementById('inputLimit').value);
+  const newOffset = parseInt(document.getElementById('inputOffset').value);
+  if (!newLimit || newLimit < 1) { toast('limit должен быть ≥ 1', true); return; }
+  if (isNaN(newOffset) || newOffset < 0) { toast('offset должен быть ≥ 0', true); return; }
+  limit = newLimit;
+  offset = newOffset;
+  currentPage = 0;
+  loadNodes();
+}
+
+function resetPaginationSettings() {
+  limit = 10;
+  offset = 0;
+  currentPage = 0;
+  document.getElementById('inputLimit').value = 10;
+  document.getElementById('inputOffset').value = 0;
+  loadNodes();
+}
+
+function prevPage() {
+  if (currentPage > 0) { currentPage--; loadNodes(); }
+}
+function nextPage() { currentPage++; loadNodes(); }
+
+async function searchById() {
+  const id = parseInt(document.getElementById('searchId').value);
+  if (!id || id < 1) { toast('Введите корректный ID', true); return; }
+  const resultBox = document.getElementById('searchResult');
+  const resultContent = document.getElementById('searchResultContent');
+  resultContent.innerHTML = '<div style="font-size:13px;color:#999;padding:8px 0">Поиск...</div>';
+  resultBox.classList.add('visible');
+  try {
+    const n = await apiFetch(`/nodes/${id}`);
+    resultContent.innerHTML = '';
+    resultContent.appendChild(buildNodeEl(n, true));
+    document.getElementById('btnClearSearch').style.display = '';
+  } catch(e) {
+    resultContent.innerHTML = `<div style="font-size:13px;color:#991b1b;padding:8px 0">Задача не найдена: ${e.message}</div>`;
+  }
+}
+
+function clearSearch() {
+  document.getElementById('searchId').value = '';
+  document.getElementById('searchResult').classList.remove('visible');
+  document.getElementById('btnClearSearch').style.display = 'none';
 }
 
 async function cycleStatus(id, currentStatus) {
@@ -269,9 +368,11 @@ async function cycleStatus(id, currentStatus) {
     await apiFetch(`/nodes/${id}`, { method: 'PUT', body: JSON.stringify({ status: next }) });
     toast(`Статус → ${next}`);
     loadNodes();
-  } catch(e) {
-    toast(e.message, true);
-  }
+    if (document.getElementById('searchResult').classList.contains('visible')) {
+      const sid = parseInt(document.getElementById('searchId').value);
+      if (sid === id) searchById();
+    }
+  } catch(e) { toast(e.message, true); }
 }
 
 async function createNode() {
@@ -284,9 +385,7 @@ async function createNode() {
     document.getElementById('newDesc').value = '';
     toast('Задача добавлена');
     loadNodes();
-  } catch(e) {
-    toast(e.message, true);
-  }
+  } catch(e) { toast(e.message, true); }
 }
 
 async function removeNode(id) {
@@ -295,9 +394,9 @@ async function removeNode(id) {
     await apiFetch(`/nodes/${id}`, { method: 'DELETE' });
     toast('Задача удалена');
     loadNodes();
-  } catch(e) {
-    toast(e.message, true);
-  }
+    const sid = parseInt(document.getElementById('searchId').value);
+    if (sid === id) clearSearch();
+  } catch(e) { toast(e.message, true); }
 }
 
 function openEdit(id, name, description, status) {
@@ -325,19 +424,11 @@ async function saveEdit() {
     toast('Задача обновлена');
     closeModal();
     loadNodes();
-  } catch(e) {
-    toast(e.message, true);
-  }
-}
-
-function prevPage() {
-  if (currentPage > 0) { currentPage--; updatePagination(); loadNodes(); }
-}
-function nextPage() { currentPage++; updatePagination(); loadNodes(); }
-
-function updatePagination() {
-  document.getElementById('pageInfo').textContent = `стр. ${currentPage + 1}`;
-  document.getElementById('btnPrev').disabled = currentPage === 0;
+    if (document.getElementById('searchResult').classList.contains('visible')) {
+      const sid = parseInt(document.getElementById('searchId').value);
+      if (sid === editingId) searchById();
+    }
+  } catch(e) { toast(e.message, true); }
 }
 
 function esc(str) {
@@ -356,10 +447,10 @@ function toast(msg, error = false) {
 document.getElementById('editModal').addEventListener('click', e => {
   if (e.target === document.getElementById('editModal')) closeModal();
 });
-
-document.getElementById('newDesc').addEventListener('keydown', e => {
-  if (e.key === 'Enter') createNode();
-});
+document.getElementById('searchId').addEventListener('keydown', e => { if (e.key === 'Enter') searchById(); });
+document.getElementById('newDesc').addEventListener('keydown', e => { if (e.key === 'Enter') createNode(); });
+document.getElementById('inputOffset').addEventListener('keydown', e => { if (e.key === 'Enter') applyPaginationSettings(); });
+document.getElementById('inputLimit').addEventListener('keydown', e => { if (e.key === 'Enter') applyPaginationSettings(); });
 
 loadNodes();
 </script>
