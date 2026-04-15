@@ -1,14 +1,18 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+sns.set_theme()
 
 np.random.seed(123)
 vals = np.random.randint(11, size=(7, 7))
+
 fig, ax = plt.subplots()
-gr = ax.pcolor(vals)
 axins = inset_axes(ax, width="7%", height="50%", loc='lower left',
-bbox_to_anchor=(1.05, 0., 1, 1), bbox_transform=ax.transAxes,
-borderpad=0)
-plt.colorbar(gr, cax=axins, ticks=[0, 5, 10], label='Value')
+                   bbox_to_anchor=(1.05, 0., 1, 1), bbox_transform=ax.transAxes,
+                   borderpad=0)
+sns.heatmap(vals, ax=ax, cbar=True, cbar_ax=axins,
+            cbar_kws={'ticks': [0, 5, 10], 'label': 'Value'})
 
 plt.show()

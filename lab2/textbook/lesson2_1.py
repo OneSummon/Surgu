@@ -1,5 +1,7 @@
+import seaborn as sns
 import matplotlib.pyplot as plt
 
-plt.plot()
-
+sns.set_theme()
+fig, ax = plt.subplots()
+sns.lineplot(x=[], y=[], ax=ax)
 plt.show()

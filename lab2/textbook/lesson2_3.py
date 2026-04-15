@@ -1,5 +1,6 @@
+import seaborn as sns
 import matplotlib.pyplot as plt
 
-plt.plot([1, 5, 10, 15, 20], [1, 7, 3, 5, 11])
-
+sns.set_theme()
+sns.lineplot(x=[1, 5, 10, 15, 20], y=[1, 7, 3, 5, 11])
 plt.show()

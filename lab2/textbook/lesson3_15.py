@@ -1,6 +1,7 @@
+import seaborn as sns
 import matplotlib.pyplot as plt
 
-plt.text(0, 7, 'HELLO!', fontsize=15)
-plt.plot(range(0,10), range(0,10))
-
+sns.set_theme()
+ax = sns.lineplot(x=list(range(10)), y=list(range(10)))
+ax.text(0, 7, 'HELLO!', fontsize=15)
 plt.show()
