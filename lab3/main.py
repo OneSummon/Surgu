@@ -1,13 +1,24 @@
+import doctest
 from itertools import permutations
 
-def solve_ex1():
-    digits = [0,1,2,3,4,5,6,7]
-    even_digits = {0,2,4,6}
-    odd_digits = {1,3,5,7}
+
+def solve_ex1(nums: int, notation: int):
+    """
+    >>> solve_ex1(1, 2)
+    1
+    >>> solve_ex1(2, 3)
+    3
+    >>> solve_ex1(5, 8)
+    504
+    """
+    digits = [int(i) for i in range(notation)]
+
+    even_digits = {i for i in digits if i % 2 == 0}
+    odd_digits = {i for i in digits if i % 2 != 0}
 
     count = 0
 
-    for code in permutations(digits, 5):
+    for code in permutations(digits, nums):
         if code[0] == 0:
             continue
         
@@ -28,28 +39,46 @@ def solve_ex1():
             count += 1
     return count
 
-print(solve_ex1())
+print(solve_ex1(5, 8))
 
 
-def solve_ex2():
-    expression = (81**17) + (3**24) - 45
+expression = (81**17) + (3**24) - 45
+def solve_ex2(expression, notation: int, count_num: int):
+    """
+    >>> solve_ex2(10, 2, 1)
+    2
+    >>> solve_ex2(255, 16, 15)
+    2
+    >>> solve_ex2(expression, 9, 8)
+    10
+    """
     result = 0
 
     def translator(num):
         res = ''
         while num > 0:
-            res = str(num % 9) + res
-            num //= 9
+            res = str(num % notation) + res
+            num //= notation
         return res
     
     new_expr = translator(expression)
-    result = new_expr.count("8")
+    result = new_expr.count(str(count_num))
 
     return result
 
-print(solve_ex2())
+print(solve_ex2(expression, 9, 8))
 
-def solve_ex3():
+def solve_ex3(left: int, right: int, count_divs: int):
+    """
+    >>> solve_ex3(1, 1000, 3)
+    16 8
+    81 27
+    625 125
+    >>> solve_ex3(123456789, 223456789, 3)
+    131079601 1225043
+    141158161 1295029
+    163047361 1442897
+    """
 
     def find_divs(number):
         divs = set()
@@ -59,10 +88,10 @@ def solve_ex3():
                 divs.add(number // i)
         return divs
     
-    result = []
-    for number in range(int(123456789 ** 0.25), int(223456789 ** 0.25) + 1):
-        if 123456789 <= number ** 4 <= 223456789:
+    for number in range(int(left ** 0.25), int(right ** 0.25) + 1):
+        if left <= number ** 4 <= right:
             divs = find_divs(number ** 4)
-            if len(divs) == 3:
+            if len(divs) == count_divs:
                 print(number ** 4, max(divs))
-solve_ex3()
+
+solve_ex3(123456789, 223456789, 3)
