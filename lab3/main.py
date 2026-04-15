@@ -1,97 +1,108 @@
 import doctest
 from itertools import permutations
 
+class Task1:
+    def __init__(self, nums: int, notation: int):
+        self.nums = nums
+        self.notation = notation
+    
+    def solve(self):
+        """
+        >>> Task1(1, 2).solve()
+        1
+        >>> Task1(2, 3).solve()
+        3
+        >>> Task1(5, 8).solve()
+        504
+        """
+        digits = [int(i) for i in range(self.notation)]
 
-def solve_ex1(nums: int, notation: int):
-    """
-    >>> solve_ex1(1, 2)
-    1
-    >>> solve_ex1(2, 3)
-    3
-    >>> solve_ex1(5, 8)
-    504
-    """
-    digits = [int(i) for i in range(notation)]
+        even_digits = {i for i in digits if i % 2 == 0}
+        odd_digits = {i for i in digits if i % 2 != 0}
 
-    even_digits = {i for i in digits if i % 2 == 0}
-    odd_digits = {i for i in digits if i % 2 != 0}
+        count = 0
 
-    count = 0
+        for code in permutations(digits, self.nums):
+            if code[0] == 0:
+                continue
+            
+            flag = True
 
-    for code in permutations(digits, nums):
-        if code[0] == 0:
-            continue
-        
-        flag = True
+            for i in range(len(code) - 1):
+                digit, next_d = code[i], code[i + 1]
 
-        for i in range(len(code) - 1):
-            digit, next_d = code[i], code[i + 1]
+                if digit in even_digits and next_d in even_digits:
+                    flag = False
+                    break
 
-            if digit in even_digits and next_d in even_digits:
-                flag = False
-                break
-
-            if digit in odd_digits and next_d in odd_digits:
-                flag = False
-                break
-        
-        if flag:
-            count += 1
-    return count
-
-print(solve_ex1(5, 8))
+                if digit in odd_digits and next_d in odd_digits:
+                    flag = False
+                    break
+            
+            if flag:
+                count += 1
+        return count
 
 
 expression = (81**17) + (3**24) - 45
-def solve_ex2(expression, notation: int, count_num: int):
-    """
-    >>> solve_ex2(10, 2, 1)
-    2
-    >>> solve_ex2(255, 16, 15)
-    2
-    >>> solve_ex2(expression, 9, 8)
-    10
-    """
-    result = 0
 
-    def translator(num):
-        res = ''
-        while num > 0:
-            res = str(num % notation) + res
-            num //= notation
-        return res
+class Task2:
+    def __init__(self, expression, notation: int, count_num: int):
+        self.expression = expression
+        self.notation = notation
+        self.count_num = count_num
     
-    new_expr = translator(expression)
-    result = new_expr.count(str(count_num))
+    def solve(self):
+        """
+        >>> Task2(10, 2, 1).solve()
+        2
+        >>> Task2(255, 16, 15).solve()
+        2
+        >>> Task2(expression, 9, 8).solve()
+        10
+        """
+        result = 0
 
-    return result
+        def translator(num):
+            res = ''
+            while num > 0:
+                res = str(num % self.notation) + res
+                num //= self.notation
+            return res
+        
+        new_expr = translator(self.expression)
+        result = new_expr.count(str(self.count_num))
 
-print(solve_ex2(expression, 9, 8))
+        return result
 
-def solve_ex3(left: int, right: int, count_divs: int):
-    """
-    >>> solve_ex3(1, 1000, 3)
-    16 8
-    81 27
-    625 125
-    >>> solve_ex3(123456789, 223456789, 3)
-    131079601 1225043
-    141158161 1295029
-    163047361 1442897
-    """
 
-    def find_divs(number):
-        divs = set()
-        for i in range(2, int(number ** 0.5) + 1):
-            if number % i == 0:
-                divs.add(i)
-                divs.add(number // i)
-        return divs
+class Task3:
+    def __init__(self, left: int, right: int, count_divs: int):
+        self.left = left
+        self.right = right
+        self.count_divs = count_divs
     
-    for number in range(int(left ** 0.25), int(right ** 0.25) + 1):
-        if left <= number ** 4 <= right:
-            divs = find_divs(number ** 4)
-            if len(divs) == count_divs:
-                print(number ** 4, max(divs))
-
-solve_ex3(123456789, 223456789, 3)
+    def solve(self):
+        """
+        >>> Task3(1, 1000, 3).solve()
+        16 8
+        81 27
+        625 125
+        >>> Task3(123456789, 223456789, 3).solve()
+        131079601 1225043
+        141158161 1295029
+        163047361 1442897
+        """
+        def find_divs(number):
+            divs = set()
+            for i in range(2, int(number ** 0.5) + 1):
+                if number % i == 0:
+                    divs.add(i)
+                    divs.add(number // i)
+            return divs
+        
+        for number in range(int(self.left ** 0.25), int(self.right ** 0.25) + 1):
+            if self.left <= number ** 4 <= self.right:
+                divs = find_divs(number ** 4)
+                if len(divs) == self.count_divs:
+                    print(number ** 4, max(divs))
