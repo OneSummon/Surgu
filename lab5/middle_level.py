@@ -25,9 +25,6 @@ def simple_func_multiply(a: int | float, b: int | float):
     print(a * b)
 
 simple_func_multiply(4, 6)
-#LOG] вызов simple_func_multiply(4, 6)
-#24
-#[LOG] результат --> None
 
 
 #пример 2, @log(prefix="MATH")
