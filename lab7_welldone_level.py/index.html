@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Lab 7</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  h2 { font-size: 18px; font-weight: 500; margin-bottom: 1rem; }
+  h3 { font-size: 15px; font-weight: 500; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 2rem; }
+  .container { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 1.5rem; }
+  .endpoint-badge { display: inline-block; font-family: monospace; font-size: 12px; background: #eeedfe; color: #3c3489; border-radius: 6px; padding: 3px 10px; margin-bottom: 1rem; }
+  label { font-size: 13px; color: #555; display: block; margin-bottom: 5px; }
+  input[type=number], input[type=text] { width: 100%; padding: 8px 12px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 8px; font-size: 14px; outline: none; background: #fff; color: #1a1a1a; transition: border-color 0.15s; }
+  input:focus { border-color: #7f77dd; box-shadow: 0 0 0 3px rgba(127,119,221,0.15); }
+  button { padding: 9px 20px; background: #fff; border: 0.5px solid rgba(0,0,0,0.25); border-radius: 8px; font-size: 14px; cursor: pointer; color: #1a1a1a; transition: background 0.12s, transform 0.1s; }
+  button:hover { background: #f5f5f0; }
+  button:active { transform: scale(0.98); }
+  .btn-primary { background: #7f77dd; color: #fff; border-color: #534ab7; }
+  .btn-primary:hover { background: #6b64c8; }
+  .result-box { margin-top: 1.25rem; border-top: 0.5px solid rgba(0,0,0,0.08); padding-top: 1.25rem; display: none; }
+  .result-box.visible { display: block; }
+  .result-label { font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .result-content { font-family: monospace; font-size: 13px; background: #f8f8f5; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 1rem; max-height: 320px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
+  .error { color: #a32d2d; }
+  .loading { color: #888; font-style: italic; }
+  .func-list { display: flex; flex-direction: column; gap: 10px; margin: 1rem 0; }
+  .func-item { border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, background 0.12s; }
+  .func-item:hover { background: #f5f5f0; }
+  .func-item.selected { border-color: #7f77dd; background: #eeedfe; }
+  .func-header { display: flex; align-items: center; gap: 10px; }
+  .func-num { width: 24px; height: 24px; border-radius: 50%; background: #d3d1c7; color: #444; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .func-item.selected .func-num { background: #7f77dd; color: #fff; }
+  .func-name { font-size: 14px; font-weight: 500; }
+  .func-desc { font-size: 13px; color: #555; margin-top: 4px; margin-left: 34px; }
+  .func-arg { display: inline-block; font-family: monospace; font-size: 11px; background: #f1efe8; color: #5f5e5a; border-radius: 4px; padding: 2px 7px; margin-top: 5px; margin-left: 34px; }
+  .arg-row { display: flex; gap: 10px; align-items: flex-end; margin-top: 1rem; }
+  .arg-row > div { flex: 1; }
+  .mem-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .stat-card { background: #f8f8f5; border-radius: 8px; padding: 12px; }
+  .stat-card .stat-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .stat-card .stat-value { font-size: 18px; font-weight: 500; color: #534ab7; }
+  .pi-display { font-size: 32px; font-weight: 500; color: #1d9e75; letter-spacing: -0.02em; margin: 0.5rem 0; }
+  .score-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+  .score-item { display: flex; align-items: center; gap: 8px; font-family: monospace; font-size: 13px; background: #f8f8f5; border-radius: 6px; padding: 6px 10px; }
+  .score-step { color: #888; font-size: 11px; min-width: 32px; }
+  .score-arrow { color: #7f77dd; }
+  .row { display: flex; gap: 10px; align-items: flex-end; }
+  .row > div { flex: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div>
+    <h1>Python Lab API</h1>
+    <p class="subtitle">well-done level</p>
+  </div>
+
+  <!-- /get_matches_result/{k} -->
+  <div class="card">
+    <div class="endpoint-badge">GET /get_matches_result/{k}</div>
+    <h2>Пути счёта матча</h2>
+    <p style="font-size:13px;color:#555;margin-bottom:1rem;">Рекурсивно перебирает все возможные пути, которыми счёт матча может дойти от 0:0 до k:k. Каждый путь — это последовательность промежуточных счётов.</p>
+    <div class="row">
+      <div>
+        <label for="k-input">Финальный счёт k (максимум каждой команды)</label>
+        <input type="number" id="k-input" min="1" max="6" value="2" placeholder="Например: 3">
+      </div>
+      <button class="btn-primary" onclick="fetchMatches()">Запросить</button>
+    </div>
+    <div class="result-box" id="matches-result">
+      <div class="result-label">Результат</div>
+      <div id="matches-count" style="font-size:13px;color:#555;margin-bottom:8px;"></div>
+      <div class="score-list" id="matches-list"></div>
+    </div>
+  </div>
+
+  <!-- /use_memory_decorator/{index_func} -->
+  <div class="card">
+    <div class="endpoint-badge">GET /use_memory_decorator/{index_func}</div>
+    <h2>Замер памяти функции</h2>
+    <p style="font-size:13px;color:#555;margin-bottom:1rem;">Выполняет выбранную функцию и измеряет потребление памяти с помощью <code>tracemalloc</code>.</p>
+
+    <div class="func-list" id="func-list">
+      <div class="func-item selected" data-idx="1" onclick="selectFunc(1)">
+        <div class="func-header"><div class="func-num">1</div><div class="func-name">list_of_squares</div></div>
+        <div class="func-desc">Список квадратов чисел от 0 до n−1</div>
+        <span class="func-arg">count: int — количество элементов</span>
+      </div>
+      <div class="func-item" data-idx="2" onclick="selectFunc(2)">
+        <div class="func-header"><div class="func-num">2</div><div class="func-name">generator_of_squares</div></div>
+        <div class="func-desc">То же, но через генераторное выражение (list comprehension через generator)</div>
+        <span class="func-arg">count: int — количество элементов</span>
+      </div>
+      <div class="func-item" data-idx="3" onclick="selectFunc(3)">
+        <div class="func-header"><div class="func-num">3</div><div class="func-name">fibonacci_recursive</div></div>
+        <div class="func-desc">n-е число Фибоначчи через рекурсию. Память растёт из-за стека вызовов. Не вводите n > 20!</div>
+        <span class="func-arg">count: int — индекс числа Фибоначчи</span>
+      </div>
+      <div class="func-item" data-idx="4" onclick="selectFunc(4)">
+        <div class="func-header"><div class="func-num">4</div><div class="func-name">matrix_multiply</div></div>
+        <div class="func-desc">Перемножение двух матриц size×size через вложенные списки</div>
+        <span class="func-arg">count: int — размер матрицы</span>
+      </div>
+      <div class="func-item" data-idx="5" onclick="selectFunc(5)">
+        <div class="func-header"><div class="func-num">5</div><div class="func-name">word_frequency</div></div>
+        <div class="func-desc">Подсчёт частоты каждого слова в тексте. Возвращает словарь word → count</div>
+        <span class="func-arg">text: str — произвольный текст для анализа</span>
+      </div>
+    </div>
+
+    <div id="mem-count-row" style="margin-top:1rem;">
+      <label for="mem-count" id="mem-arg-label">count — количество элементов</label>
+      <input type="number" id="mem-count" min="1" value="1000" placeholder="Число">
+    </div>
+    <div id="mem-text-row" style="margin-top:1rem;display:none;">
+      <label for="mem-text">text — текст для анализа частоты слов</label>
+      <input type="text" id="mem-text" placeholder="Введите текст, например: hello world hello python" value="hello world hello python world">
+    </div>
+
+    <div style="margin-top:1rem;">
+      <button class="btn-primary" onclick="fetchMemory()">Запустить и замерить память</button>
+    </div>
+
+    <div class="result-box" id="mem-result">
+      <div class="result-label">Результат выполнения</div>
+      <div class="mem-stats">
+        <div class="stat-card">
+          <div class="stat-label">Текущая память</div>
+          <div class="stat-value" id="mem-current">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Пик памяти</div>
+          <div class="stat-value" id="mem-peak">—</div>
+        </div>
+      </div>
+      <div style="margin-top:1rem;">
+        <div class="result-label">Возвращаемое значение функции</div>
+        <div class="result-content" id="mem-value"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- /get_pi_numbers/{iterations} -->
+  <div class="card">
+    <div class="endpoint-badge">GET /get_pi_numbers/{iterations}</div>
+    <h2>Вычисление числа π (формула Лейбница)</h2>
+    <p style="font-size:13px;color:#555;margin-bottom:1rem;">Генератор суммирует ряд Лейбница π = 4·(1 − 1/3 + 1/5 − ...) заданное число итераций и возвращает финальное приближение.</p>
+    <div class="row">
+      <div>
+        <label for="pi-iter">Количество итераций</label>
+        <input type="number" id="pi-iter" min="1" value="100000" placeholder="Например: 100000">
+      </div>
+      <button class="btn-primary" onclick="fetchPi()">Вычислить π</button>
+    </div>
+    <div class="result-box" id="pi-result">
+      <div class="result-label">Приближение числа π</div>
+      <div class="pi-display" id="pi-value">—</div>
+      <div style="font-size:13px;color:#555;" id="pi-desc"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const BASE = 'http://127.0.0.1:8000';
+let selectedFunc = 1;
+
+function selectFunc(idx) {
+  document.querySelectorAll('.func-item').forEach(el => el.classList.remove('selected'));
+  document.querySelector(`.func-item[data-idx="${idx}"]`).classList.add('selected');
+  selectedFunc = idx;
+  if (idx === 5) {
+    document.getElementById('mem-count-row').style.display = 'none';
+    document.getElementById('mem-text-row').style.display = 'block';
+  } else {
+    document.getElementById('mem-count-row').style.display = 'block';
+    document.getElementById('mem-text-row').style.display = 'none';
+  }
+  document.getElementById('mem-result').classList.remove('visible');
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' Б';
+  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' КБ';
+  return (b / (1024 * 1024)).toFixed(2) + ' МБ';
+}
+
+async function fetchMatches() {
+  const k = document.getElementById('k-input').value;
+  if (!k || k < 1) return alert('Введите k ≥ 1');
+  const listEl = document.getElementById('matches-list');
+  const countEl = document.getElementById('matches-count');
+  const box = document.getElementById('matches-result');
+  listEl.innerHTML = '<div class="loading">Загрузка...</div>';
+  box.classList.add('visible');
+  try {
+    const resp = await fetch(`${BASE}/get_matches_result/${k}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const paths = data.result;
+    countEl.textContent = `Найдено путей: ${paths.length}`;
+    listEl.innerHTML = '';
+    paths.forEach((path, i) => {
+      const div = document.createElement('div');
+      div.className = 'score-item';
+      div.innerHTML = `<span class="score-step">#${i+1}</span>${path.map((s, j) => (j > 0 ? `<span class="score-arrow">→</span>` : '') + `<span>${s}</span>`).join('')}`;
+      listEl.appendChild(div);
+    });
+  } catch (e) {
+    listEl.innerHTML = `<div class="result-content error">Ошибка: ${e.message}\n\nСервер запущен? BASE_URL = ${BASE}</div>`;
+  }
+}
+
+async function fetchMemory() {
+  let url = `${BASE}/use_memory_decorator/${selectedFunc}`;
+  if (selectedFunc === 5) {
+    const text = document.getElementById('mem-text').value.trim();
+    if (!text) return alert('Введите текст');
+    url += `?text=${encodeURIComponent(text)}`;
+  } else {
+    const count = document.getElementById('mem-count').value;
+    if (!count || count < 1) return alert('Введите count ≥ 1');
+    url += `?count=${count}`;
+  }
+  const box = document.getElementById('mem-result');
+  document.getElementById('mem-current').textContent = '...';
+  document.getElementById('mem-peak').textContent = '...';
+  document.getElementById('mem-value').textContent = 'Загрузка...';
+  box.classList.add('visible');
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    document.getElementById('mem-current').textContent = formatBytes(data.memory_current);
+    document.getElementById('mem-peak').textContent = formatBytes(data.memory_peak);
+    const val = data.result;
+    if (typeof val === 'object' && val !== null) {
+      document.getElementById('mem-value').textContent = JSON.stringify(val, null, 2);
+    } else {
+      document.getElementById('mem-value').textContent = String(val);
+    }
+  } catch (e) {
+    document.getElementById('mem-value').textContent = `Ошибка: ${e.message}\n\nСервер запущен? BASE_URL = ${BASE}`;
+    document.getElementById('mem-current').textContent = '—';
+    document.getElementById('mem-peak').textContent = '—';
+  }
+}
+
+async function fetchPi() {
+  const iter = document.getElementById('pi-iter').value;
+  if (!iter || iter < 1) return alert('Введите iterations ≥ 1');
+  const box = document.getElementById('pi-result');
+  document.getElementById('pi-value').textContent = '...';
+  document.getElementById('pi-desc').textContent = '';
+  box.classList.add('visible');
+  try {
+    const resp = await fetch(`${BASE}/get_pi_numbers/${iter}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const pi = data.result;
+    document.getElementById('pi-value').textContent = pi.toFixed(10);
+    const diff = Math.abs(Math.PI - pi);
+    document.getElementById('pi-desc').textContent = `Погрешность относительно Math.PI: ${diff.toExponential(4)} | Итераций: ${Number(iter).toLocaleString('ru')}`;
+  } catch (e) {
+    document.getElementById('pi-value').textContent = '—';
+    document.getElementById('pi-desc').textContent = `Ошибка: ${e.message}. Сервер запущен? BASE_URL = ${BASE}`;
+  }
+}
+</script>
+</body>
+</html>
